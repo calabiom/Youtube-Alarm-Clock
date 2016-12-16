@@ -1,16 +1,15 @@
 # Alarm Clock
 
 ## This is a simple program that takes input in the form of
-##  "(hr) (min) (am/pm/AM/PM)" (i.e. "8 20 PM")
-## When the desired time rings, the program reads from a textfile
-## full of random YT videos and opens them up in the user's browser.
+##  "(hr) (min) (/AM/PM)" (i.e. "8 20 PM")
+## When the desired time rings, the program reads from a textfile full of random YT videos and opens them up in the user's browser.
 
 import time
 import datetime
 import webbrowser
 import random
 
-file_to_open = "videos_to_wake_up_to.txt"
+file_to_open = "alarm_clock_vid_test.txt"
 
 class AlarmClockError(Exception):
     pass
@@ -21,7 +20,7 @@ def error_check_inputs(input_time: str):
     
     if len(error_check_time_str) != 3:
         raise AlarmClockError("The input for the desired wake-up time must be \
-                       in the format of '(hr) (min) (am/pm)'. For example, \
+                       in the format of '(hr) (min) (AM/PM)'. For example, \
                        the user-input, '8 51 AM' (meaning 8:51 AM), is acceptable")
     else:
         if (int(error_check_time_str[0]) < 0) or (int(error_check_time_str[0]) > 12):
@@ -31,10 +30,14 @@ def error_check_inputs(input_time: str):
         if (int(error_check_time_str[1]) < 0) or (int(error_check_time_str[1]) > 59):
             raise AlarmClockError("The input for the minutes must be a positive integer \
                                  between 0 and 59 minutes")
+            
+        if (len(error_check_time_str[1]) == 1):
+            raise AlarmClockError("The input for a single-digit minute should have a zero (0) \
+                                   in front of it (i.e. 8:08 AM --> 8 08 AM)")
         
-        if error_check_time_str[2] not in ["AM", "PM", "am", "pm"]:
+        if error_check_time_str[2] not in ["AM", "PM"]:
             raise AlarmClockError("The input for the Ante/Post Meridiem must be \
-                           either 'AM', 'PM', 'am', or 'pm'")
+                           either 'AM' or 'PM' (must be capitalized)")
     return
             
 def set_alarm() -> str:
@@ -76,4 +79,6 @@ if __name__ == "__main__":
             print("WAKE UP! The time is {}.".format(time.strftime("%I:%M:%p")))
             open_file_if_alarm_rings()
             break
+        
+    print("Goodbye :)")
 
